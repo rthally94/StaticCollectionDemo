@@ -17,9 +17,9 @@ class Podcast: ObservableObject, Identifiable {
 
     var hosts: [String]
 
-    var ratings: [String]
+    var ratings: [Rating]
 
-    init(title: String, category: String, episodes: [Episode], hosts: [String], ratings: [String]) {
+    init(title: String, category: String, episodes: [Episode], hosts: [String], ratings: [Rating]) {
         self.title = title
         self.category = category
 

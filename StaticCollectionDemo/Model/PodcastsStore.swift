@@ -28,7 +28,7 @@ class PodcastsStore: ObservableObject {
                 Episode(number: 2, title: "The One That Comes Next", description: "A longer Description.")
             ],
             hosts: ["Host 2"],
-            ratings: ["Love this one!"]
+            ratings: Rating.demoRatings.dropLast()
         ),
         Podcast(
             title: "A Proper One",
@@ -38,8 +38,8 @@ class PodcastsStore: ObservableObject {
                 Episode(number: 2, title: "The One That Comes Next", description: "A longer Description."),
                 Episode(number: 3, title: "The Forgotten One", description: "A really, really, really long description.")
             ],
-            hosts: ["Host 1", "Host 2"],
-            ratings: ["Love this one!", "Can't get enough!"]
+            hosts: ["Host 1", "Host 2", "Host 3", "Host 4"],
+            ratings: Rating.demoRatings
         ),
     ]
 }
