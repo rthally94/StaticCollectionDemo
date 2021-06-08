@@ -9,6 +9,13 @@ import UIKit
 
 class PodcastDetailViewController: UIViewController {
     // MARK: - Properties
+    static let ordinalNumberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .ordinal
+        formatter.formattingContext = .middleOfSentence
+        return formatter
+    }()
+
     typealias Section = ViewModel.Section
     typealias Item = ViewModel.Item
 
@@ -33,18 +40,32 @@ class PodcastDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = podcast?.title
-        applyInitialSnapshot()
+        configureNavBar()
+        reloadData()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    private func configureNavBar() {
+        title = podcast?.title
+        navigationItem.rightBarButtonItem = UIBarButtonItem.init(systemItem: .edit, menu: makeMenu())
+    }
 
-        if collectionView.indexPathsForSelectedItems?.isEmpty == false {
-            collectionView.indexPathsForSelectedItems?.forEach({ indexPath in
-                collectionView.deselectItem(at: indexPath, animated: true)
+    private func makeMenu() -> UIMenu {
+        let items = [
+            UIAction(title: "Add Episode", image: UIImage(systemName: "plus"), handler: {[unowned self] action in
+                addNewEpisode()
             })
-        }
+        ]
+        let menu = UIMenu(children: items)
+        return menu
+    }
+
+    // MARK: Actions
+    private func addNewEpisode() {
+        let episodeCount = (podcast?.episodes.count ?? 0) + 1
+        let newEpisode = Episode(number: episodeCount, title: "The \(Self.ordinalNumberFormatter.string(from: NSNumber(value: episodeCount)))", description: "Hello, WWDC!")
+        podcast?.episodes.append(newEpisode)
+
+        applySnapshot()
     }
 }
 
@@ -175,7 +196,22 @@ extension PodcastDetailViewController {
         }
     }
 
-    func applyInitialSnapshot() {
+    func reloadData() {
+        dataSource.apply(makeSnapshot(), animatingDifferences: false)
+    }
+
+    func applySnapshot(animatingDifferences: Bool = true)
+    {
+        if animatingDifferences {
+            dataSource.apply(makeSnapshot())
+        } else {
+            UIView.performWithoutAnimation {
+                self.dataSource.apply(makeSnapshot())
+            }
+        }
+    }
+
+    private func makeSnapshot() -> NSDiffableDataSourceSnapshot<Section, Item> {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         let visibleSections = Section.allCases.filter { section in
             switch section {
@@ -208,9 +244,7 @@ extension PodcastDetailViewController {
             snapshot.appendItems(ratingItems, toSection: .ratings)
         }
 
-        UIView.performWithoutAnimation {
-            self.dataSource.apply(snapshot)
-        }
+        return snapshot
     }
 }
 

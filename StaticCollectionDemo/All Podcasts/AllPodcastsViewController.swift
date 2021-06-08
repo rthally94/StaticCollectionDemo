@@ -118,9 +118,7 @@ extension AllPodcastsViewController {
         }
         snapshot.appendItems(items, toSection: .all)
 
-        UIView.performWithoutAnimation {
-            self.dataSource.apply(snapshot)
-        }
+        self.dataSource.apply(snapshot, animatingDifferences: false)
     }
 }
 
