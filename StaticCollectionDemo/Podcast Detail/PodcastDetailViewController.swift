@@ -62,7 +62,7 @@ class PodcastDetailViewController: UIViewController {
     // MARK: Actions
     private func addNewEpisode() {
         let episodeCount = (podcast?.episodes.count ?? 0) + 1
-        let newEpisode = Episode(number: episodeCount, title: "The \(Self.ordinalNumberFormatter.string(from: NSNumber(value: episodeCount)))", description: "Hello, WWDC!")
+        let newEpisode = Episode(number: episodeCount, title: "The \(Self.ordinalNumberFormatter.string(from: NSNumber(value: episodeCount)) ?? "Unknown") Episode", description: "Hello, WWDC!")
         podcast?.episodes.append(newEpisode)
 
         applySnapshot()
